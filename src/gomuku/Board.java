@@ -1,4 +1,4 @@
-package gomoku;
+package gomuku;
 
 /**
  *

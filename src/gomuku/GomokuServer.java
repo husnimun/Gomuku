@@ -1,4 +1,4 @@
-    package gomoku;
+package gomuku;
 
 import java.io.IOException;
 import java.io.PrintStream;
