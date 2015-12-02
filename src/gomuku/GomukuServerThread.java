@@ -12,15 +12,15 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-class GomukuClientThread extends Thread {
+class GomukuServerThread extends Thread {
     private DataInputStream is = null;
     private PrintStream os = null;
     private Socket clientSocket = null;
     
-    private GomukuClientThread[] threads;
+    private GomukuServerThread[] threads;
     private int maxClientsCount;
 
-    public GomukuClientThread(Socket clientSocket, GomukuClientThread[] threads) {
+    public GomukuServerThread(Socket clientSocket, GomukuServerThread[] threads) {
         this.clientSocket = clientSocket;
         this.threads = threads;
         maxClientsCount = threads.length;
