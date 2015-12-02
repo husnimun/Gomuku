@@ -56,7 +56,8 @@ public class Board {
         for(int i = 0; i < 8; i++) {
           int tx = x + dx[i];
           int ty = y + dy[i];
-          while(isValid(tx, ty) && board[tx][ty] == el) {
+          while(isValid(tx, ty)) {
+              if(board[tx][ty] != el) break;
               isi[i]++;
               tx += dx[i];
               ty += dy[i];
@@ -71,6 +72,6 @@ public class Board {
     }
     
     private boolean isValid(int x, int y) {
-        return 0 <= x && x <= boardWidth && 0 <= y && y <= boardHeight;
+        return 0 <= x && x < boardWidth && 0 <= y && y < boardHeight;
     }
 }

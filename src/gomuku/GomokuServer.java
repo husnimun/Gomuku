@@ -14,8 +14,7 @@ public class GomokuServer {
     private static Socket clientSocket = null;
     private static int maxClientsCount = 3;
     private static int maxRoomCount = 5;
-    private static GomukuServerThread[] threads = new GomukuServerThread[maxClientsCount];
-    private static int[] playerNow = new int[maxRoomCount]; 
+    private static GomukuServerThread[] threads = new GomukuServerThread[maxClientsCount]; 
     
     public static void main(String args[]) {
         int port = 8000;

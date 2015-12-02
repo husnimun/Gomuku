@@ -80,6 +80,7 @@ public class GomukuClient implements Runnable {
                 JSONObject message = new JSONObject();
                 message.put("type", "coordinate");
                 message.put("playerId", player.getId());
+                message.put("roomId", player.getRoom());
                 message.put("content", coordinate);
                 
                 os.println(message.toString());
@@ -101,7 +102,6 @@ public class GomukuClient implements Runnable {
         try {
             // Receive player id
             responseLine = is.readLine();
-            System.out.println(responseLine);
             player.setId(Integer.parseInt(responseLine));
             
             start = true;
@@ -116,6 +116,7 @@ public class GomukuClient implements Runnable {
                     System.err.println(ex);
                 }
                 
+                System.out.println(message);
                 String type = (String) message.get("type");
                 if (type.equals("coordinate")) {
                     JSONArray coordinate = new JSONArray();
@@ -127,7 +128,6 @@ public class GomukuClient implements Runnable {
                     board.add(x, y, playerId);
                     board.print();
                 } else {
-                    System.out.println("Chat biasa");
                     System.out.println(message.get("content"));
                 }
                 
