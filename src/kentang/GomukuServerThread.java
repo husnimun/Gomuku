@@ -1,8 +1,9 @@
-package gomuku;
+package kentang;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 import org.json.simple.parser.ParseException;
@@ -16,24 +17,13 @@ class GomukuServerThread extends Thread {
     private DataInputStream is = null;
     private PrintStream os = null;
     private Socket clientSocket = null;
-    private int maxClientsCount;
-    private int maxRoomCount;
-    
-    private GomukuServerThread[] threads;
-    private static int[] playerNow;
-    private static int[] playerCount;
-    private static int roomCount;
+    private GameComponent a;
     
     private Player player;
     
-    public GomukuServerThread(Socket clientSocket, GomukuServerThread[] threads,
-            int[] playerNow, int[] playerCount, int roomCount) {
+    public GomukuServerThread(Socket clientSocket, GameComponent a) {
         this.clientSocket = clientSocket;
-        this.threads = threads;
-        maxClientsCount = threads.length;
-        this.playerNow = playerNow;
-        this.playerCount = playerCount;
-        this.roomCount = roomCount;
+        this.a = a;
     }
     
     public Player getPlayer() {
@@ -43,12 +33,40 @@ class GomukuServerThread extends Thread {
     /*
      * Broadcast message to all clients
      */
-    public void broadcastMessage(String message) {
-        for (int i = 0; i < maxClientsCount; i++) {
-            if (threads[i] != null && player.getRoom() == threads[i].getPlayer().getRoom()) {
-                threads[i].os.println(message);
+    public void broadcastToRoom(String message) {
+        for (int i = 0; i < a.maxClientsCount; i++) {
+            if (a.threads[i] != null && player.getRoom() == a.threads[i].getPlayer().getRoom()) {
+                a.threads[i].os.println(message);
             }
         }
+    }
+    
+    public void broadcastToHome(String message) {
+        for(int i = 0; i < a.maxClientsCount; i++) {
+            if(a.threads[i] != null && a.threads[i].getPlayer().getRoom() == 0) {
+                a.threads[i].os.println(message);
+            }
+        }
+    }
+    
+    public void createRoom() {
+        
+    }
+    
+    public void joinRoom() {
+        
+    }
+    
+    public void exitRoom() {
+        
+    }
+    
+    public void play() {
+        
+    }
+    
+    public void chat(String message) {
+        
     }
     
     public void run() {
@@ -57,8 +75,8 @@ class GomukuServerThread extends Thread {
             os = new PrintStream(clientSocket.getOutputStream());
             
             // Send player id to client;
-            for (int i = 0; i < maxClientsCount; i++) {
-                if (threads[i] == this) {
+            for (int i = 0; i < a.maxClientsCount; i++) {
+                if (a.threads[i] == this) {
                     os.println(i);
                 }
             }
@@ -66,6 +84,17 @@ class GomukuServerThread extends Thread {
             // Get player object from client;
             ObjectInputStream ois = new ObjectInputStream(is);
             player = (Player) ois.readObject();
+            
+            // Send id player object to client
+            ObjectOutputStream oos = new ObjectOutputStream(os);
+            int ret = -1;
+            for(int i = 0; i < a.maxClientsCount; i++) {
+                if(a.threads[i] == this) {
+                    ret = i;
+                    break;
+                }
+            }
+            oos.writeObject(new Integer(ret));
             
             // Send welcome message to connected user
             JSONObject welcomeMessage = new JSONObject();
@@ -75,7 +104,7 @@ class GomukuServerThread extends Thread {
             welcomeMessage.put("content", player.getName() + " has entered the chat room");
             
             // Broadcast message to all clients
-            broadcastMessage(welcomeMessage.toString());
+            broadcastToRoom(welcomeMessage.toString());
 
             // Receive message from clients
             while (true) {
@@ -92,21 +121,17 @@ class GomukuServerThread extends Thread {
                 // Client close connection
                 String type = (String) message.get("type");
                 if (!type.equals("end")) {
-                    broadcastMessage(message.toString());
+                    broadcastToRoom(message.toString());
                 } else {
                     break;
                 }
             }
             
             // User is leaving the room
-            broadcastMessage(player.getName() + " is leaving the room");
+            broadcastToRoom(player.getName() + " is leaving the room");
             
             // Remove this thread from threads
-            for (int i = 0; i < maxClientsCount; i++) {
-                if (threads[i] == this ) {
-                    threads[i] = null;
-                }
-            }
+            a.threads[player.getId()] = null;
             
             is.close();
             os.close();
