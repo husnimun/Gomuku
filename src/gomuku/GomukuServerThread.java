@@ -20,15 +20,18 @@ class GomukuServerThread extends Thread {
     private GomukuServerThread[] threads;
     private int maxClientsCount;
     
-    
-    
     private Player player;
-    private static int[] playerNow = new int[10];
+    private static int maxRoomCount = 20;
+    private static int[] playerNow = new int[maxRoomCount];
     
     public GomukuServerThread(Socket clientSocket, GomukuServerThread[] threads) {
         this.clientSocket = clientSocket;
         this.threads = threads;
         maxClientsCount = threads.length;
+        
+        for (int i = 0; i < playerNow.length; i++) {
+            playerNow[i] = 0;
+        }
     }
     
     public Player getPlayer() {
@@ -84,7 +87,7 @@ class GomukuServerThread extends Thread {
                     System.err.println(ex);
                 }
                 
-                // Broadcast the message to another clients
+                // Client close connection
                 String type = (String) message.get("type");
                 if (!type.equals("end")) {
                     broadcastMessage(message.toString());
