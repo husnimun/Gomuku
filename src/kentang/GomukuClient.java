@@ -108,16 +108,16 @@ public class GomukuClient implements Runnable {
     /********************** HANDLE RESPONSE FROM SERVER **********************/
     
     public static void chat(JSONObject object) {
-        int playerId = (int) object.get("playerId");
-        int roomId = (int) object.get("roomId");
+        int playerId = ((Long) object.get("playerId")).intValue();
+        int roomId = ((Long) object.get("roomId")).intValue();
         String name = (String) object.get("name");
         String content = (String) object.get("content");
         System.out.format("> %s : %s\n", name, content);
     }
     
     public static void addCoordinate(JSONObject object) {
-        int playerId = (int) object.get("playerId");
-        int roomId = (int) object.get("roomId");
+        int playerId = ((Long) object.get("playerId")).intValue();
+        int roomId = ((Long) object.get("roomId")).intValue();
         String name = (String) object.get("name");
         JSONArray coordinate = (JSONArray) object.get("content");
         int i = ((Long)coordinate.get(0)).intValue();
@@ -128,8 +128,8 @@ public class GomukuClient implements Runnable {
     }
     
     public static void joinRoom(JSONObject object) {
-        int playerId = (int) object.get("playerId");
-        int roomId = (int) object.get("roomId");
+        int playerId = ((Long) object.get("playerId")).intValue();
+        int roomId = ((Long) object.get("roomId")).intValue();
         if(roomId == 0) {
             System.out.format("You have exited from room %d\n", player.getRoom());
         } else {
@@ -148,8 +148,8 @@ public class GomukuClient implements Runnable {
         System.out.format("%7s | %17s | %9s\n", "Room ID", "Number of Players", "isPlaying");
         for(int i = 0; i < size; i++) {
             JSONObject room = (JSONObject) rooms.get(i);
-            int roomId = (int) room.get("roomId");
-            int playerCount = (int) room.get("playerCount");
+            int roomId = ((Long) room.get("roomId")).intValue();
+            int playerCount = ((Long) room.get("playerCount")).intValue();
             boolean isPlaying = (boolean) room.get("isPlaying");
             System.out.format("%7s | %17s | %9s\n", roomId, playerCount, isPlaying);
         }
@@ -166,7 +166,7 @@ public class GomukuClient implements Runnable {
         System.out.format("%2s | Name\n", "ID");
         for(int i = 0; i < size; i++) {
             JSONObject room = (JSONObject) players.get(i);
-            int playerId = (int) room.get("playerId");
+            int playerId = ((Long) room.get("playerId")).intValue();
             String name = (String) room.get("name");
             System.out.format("%2s | %15s\n", playerId, name);
         }
@@ -175,7 +175,7 @@ public class GomukuClient implements Runnable {
     
     public static void canPlay(JSONObject object) {
         canPlay = true;
-        System.out.println("TYPE \"start\" to START THE GAME!");
+        System.out.println("TYPE \"play\" to START THE GAME!");
     }
     
     public static void disablePlay(JSONObject object) {
@@ -184,7 +184,7 @@ public class GomukuClient implements Runnable {
     }
     
     public static void play(JSONObject object) {
-        int playerId = (int) object.get("playerId");
+        int playerId = ((Long) object.get("playerId")).intValue();
         String name = (String) object.get("name");
         board = new Board();
         board.print();
@@ -198,7 +198,7 @@ public class GomukuClient implements Runnable {
     }
     
     public static void win(JSONObject object) {
-        int playerId = (int) object.get("playerId");
+        int playerId = ((Long) object.get("playerId")).intValue();
         String name = (String) object.get("name");
         if(playerId == player.getId()) {
             System.out.println("You won the game!");
@@ -216,7 +216,7 @@ public class GomukuClient implements Runnable {
     }
     
     public static void playing(JSONObject object) {
-        int roomId = (int) object.get("roomId");
+        int roomId = ((Long) object.get("roomId")).intValue();
         System.out.format("You cannot enter room %d, they are playing.\n", roomId);
     }
     
@@ -249,16 +249,17 @@ public class GomukuClient implements Runnable {
             new Thread(new GomukuClient()).start();
             
             // Wait until start
-            while(!start) {}
+            while(!start) {
+                Thread.sleep(500);
+            }
+            
+            System.out.println("Sudah tidak start lagi");
             
             // Send player object
             ObjectOutputStream oos = new ObjectOutputStream(os);
             oos.writeObject(player);
             
-            // Receive player id
-            ObjectInputStream ois = new ObjectInputStream(is);
-            Integer id = (Integer) ois.readObject();
-            player.setId(id);
+            System.out.println("Your ID is " + player.getId());
             
             // Send data through socket
             while (!closed) {
@@ -282,7 +283,6 @@ public class GomukuClient implements Runnable {
             is.close();
             os.close();
             oos.close();
-            ois.close();
             socket.close();
         } catch (Exception e) {
             System.err.println(e);
@@ -296,9 +296,10 @@ public class GomukuClient implements Runnable {
             // Receive player id
             responseLine = is.readLine();
             player.setId(Integer.parseInt(responseLine));
+            System.out.println(player.getId());
             
             start = true;
-            
+            System.out.println("start udah bener");
             while((responseLine = is.readLine()) != null && start) {
                 JSONObject message = new JSONObject();
                 try {
