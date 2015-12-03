@@ -17,6 +17,8 @@ public class GameComponent {
     public static int[] playerNow = new int[maxRoomCount];
     public static int[] playerCount = new int[maxRoomCount];
     public static boolean[] isPlaying = new boolean[maxRoomCount];
+    public static Board[] boards = new Board[maxRoomCount];
+    public static int[][] players = new int[maxRoomCount][maxClientsCount];
     public static int roomCount = 0;
     
     public GameComponent() {
@@ -27,6 +29,7 @@ public class GameComponent {
             playerNow[i] = 0;
             playerCount[i] = 0;
             isPlaying[i] = false;
+            boards[i] = new Board();
         }
     }
 }

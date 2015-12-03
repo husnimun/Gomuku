@@ -16,6 +16,8 @@ import org.json.simple.parser.JSONParser;
 class GomukuServerThread extends Thread {
     private DataInputStream is = null;
     private PrintStream os = null;
+    private ObjectInputStream ois = null;
+    private ObjectOutputStream oos = null;
     private Socket clientSocket = null;
     private GameComponent a;
     
@@ -30,9 +32,6 @@ class GomukuServerThread extends Thread {
         return player;
     }
   
-    /*
-     * Broadcast message to all clients
-     */
     public void broadcastToRoom(String message) {
         for (int i = 0; i < a.maxClientsCount; i++) {
             if (a.threads[i] != null && player.getRoom() == a.threads[i].getPlayer().getRoom()) {
@@ -49,15 +48,53 @@ class GomukuServerThread extends Thread {
         }
     }
     
-    public void createRoom() {
+    /****************** HANDLE REQUEST FROM CLIENT  *********************/
+    
+    public void createRoom(JSONObject object) {
         
     }
     
-    public void joinRoom() {
+    public void joinRoom(JSONObject object) {
         
     }
     
-    public void exitRoom() {
+    public void exitRoom(JSONObject object) {
+        
+    }
+    
+    public void chat(JSONObject object) {
+        
+    }
+    
+    public void addCoordinate(JSONObject object) {
+        
+    }
+    
+    /********************* SERVER ACTION BELOW HERE *************************/
+    
+    public JSONObject createHomeStatus() {
+        JSONObject object = new JSONObject();
+        
+        return object;
+    }
+    
+    public JSONObject createRoomStatus() {
+        
+    }
+    
+    public void sendHomeStatus() {
+        
+    }
+    
+    public void sendRoomStatus() {
+        
+    }
+    
+    public void sendCanPlay() {
+        
+    }
+    
+    public void sendDisablePlay() {
         
     }
     
@@ -65,7 +102,14 @@ class GomukuServerThread extends Thread {
         
     }
     
-    public void chat(String message) {
+    public void win(int playerId) {
+        
+    }
+    
+    /**
+     * Handle this disconnect
+     */
+    public void disconnect() {
         
     }
     
@@ -74,37 +118,23 @@ class GomukuServerThread extends Thread {
             is = new DataInputStream(clientSocket.getInputStream());
             os = new PrintStream(clientSocket.getOutputStream());
             
-            // Send player id to client;
-            for (int i = 0; i < a.maxClientsCount; i++) {
-                if (a.threads[i] == this) {
-                    os.println(i);
-                }
-            }
-            
             // Get player object from client;
-            ObjectInputStream ois = new ObjectInputStream(is);
+            ois = new ObjectInputStream(is);
             player = (Player) ois.readObject();
             
             // Send id player object to client
-            ObjectOutputStream oos = new ObjectOutputStream(os);
-            int ret = -1;
+            oos = new ObjectOutputStream(os);
             for(int i = 0; i < a.maxClientsCount; i++) {
                 if(a.threads[i] == this) {
-                    ret = i;
+                    player.setId(i);
+                    oos.writeObject(new Integer(i));
                     break;
                 }
             }
-            oos.writeObject(new Integer(ret));
             
-            // Send welcome message to connected user
-            JSONObject welcomeMessage = new JSONObject();
-            welcomeMessage.put("type", "chat");
-            welcomeMessage.put("playerId", player.getId());
-            welcomeMessage.put("roomId", player.getRoom());
-            welcomeMessage.put("content", player.getName() + " has entered the chat room");
-            
-            // Broadcast message to all clients
-            broadcastToRoom(welcomeMessage.toString());
+            // Send home status to connected user
+            JSONObject homeStatus = createHomeStatus();
+            os.println(homeStatus.toString());
 
             // Receive message from clients
             while (true) {
@@ -133,12 +163,16 @@ class GomukuServerThread extends Thread {
             // Remove this thread from threads
             a.threads[player.getId()] = null;
             
-            is.close();
-            os.close();
-            clientSocket.close();
 
-        } catch (IOException | ClassNotFoundException e) {
+
+        } catch (Exception e) {
+            disconnect();
             System.err.println(e);
         }
+        is.close();
+        os.close();
+        ois.close();
+        oos.close();
+        clientSocket.close();
     }
 }

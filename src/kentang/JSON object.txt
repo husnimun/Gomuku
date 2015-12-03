@@ -1,0 +1,43 @@
+from user
+
+- create room
+- join room
+- eksit room
+- click play
+
+- chat
+- coordinate
+
+from server
+- home status
+- room status
+- can play
+- disable play
+- play
+
+
+
+JSON object type
+[FROM CLIENT]
+- create : playerId
+- join : playerId, roomId
+- eksit : playerId
+- play : playerId
+- chat : playerId, roomId, content (String)
+- coordinate : playerId, roomId, content (JSON Array)
+
+[FROM SERVER]
+- chat : playerId, roomId, name, content (String)
+- coordinate : playerId, roomId, name, content (JSON Array)
+
+- join : playerId, roomId
+- home : content (JSON Array of {roomId, playerCount, isPlaying})
+- room : content (JSON Array of {playerId, name})
+- can : 
+- disable : 
+- play : playerId, name
+- unplay
+- win : playerId, name
+- not :
+- turn : 
+- playing : roomId
