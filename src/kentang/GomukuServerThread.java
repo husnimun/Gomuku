@@ -9,6 +9,7 @@ import java.net.Socket;
 import org.json.simple.parser.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static kentang.GameComponent.maxClientsCount;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -21,20 +22,22 @@ class GomukuServerThread extends Thread {
     private Socket clientSocket = null;
     private GameComponent a;
     
-    private Player player;
+    int id = -1;
     
     public GomukuServerThread(Socket clientSocket, GameComponent a) {
         this.clientSocket = clientSocket;
         this.a = a;
-    }
-    
-    public Player getPlayer() {
-        return player;
+        for(int i = 0; i < a.maxClientsCount; i++) {
+            if(a.threads[i] == this) {
+                id = i;
+                break;
+            }
+        }
     }
   
     public void broadcastToRoom(String message) {
         for (int i = 0; i < a.maxClientsCount; i++) {
-            if (a.threads[i] != null && player.getRoom() == a.threads[i].getPlayer().getRoom()) {
+            if (a.threads[i] != null && a.player[id].getRoom() == a.player[i].getRoom()) {
                 a.threads[i].os.println(message);
             }
         }
@@ -42,7 +45,7 @@ class GomukuServerThread extends Thread {
     
     public void broadcastToHome(String message) {
         for(int i = 0; i < a.maxClientsCount; i++) {
-            if(a.threads[i] != null && a.threads[i].getPlayer().getRoom() == 0) {
+            if(a.threads[i] != null && a.player[i].getRoom() == 0) {
                 a.threads[i].os.println(message);
             }
         }
@@ -62,56 +65,106 @@ class GomukuServerThread extends Thread {
         
     }
     
+    public void play(JSONObject object) {
+        
+    }
+    
     public void chat(JSONObject object) {
         
     }
     
     public void addCoordinate(JSONObject object) {
-        
+        JSONArray coordinate = (JSONArray) object.get("content");
+        int x = ((Long) coordinate.get(0)).intValue();
+        int y = ((Long) coordinate.get(1)).intValue();
+        int playerId = ((Long) object.get("playerId")).intValue();
+        int roomId = ((Long) object.get("roomId")).intValue();
+        a.boards[roomId].add(x, y, playerId);
     }
     
     /********************* SERVER ACTION BELOW HERE *************************/
     
     public JSONObject createHomeStatus() {
+        JSONArray content = new JSONArray();
+        for(int i = 0; i < a.maxRoomCount; i++) {
+            if(a.playerCount[i] > 0) {
+                JSONObject room = new JSONObject();
+                room.put("roomId", i);
+                room.put("playerCount", a.playerCount[i]);
+                room.put("isPlaying", a.isPlaying[i]);
+                content.add(room);
+            }
+        }
         JSONObject object = new JSONObject();
-        
+        object.put("content", content);
         return object;
     }
     
     public JSONObject createRoomStatus() {
-        
+        JSONArray content = new JSONArray();
+        for(int i = 0; i < a.maxClientsCount; i++) {
+            if(a.player[i].getRoom() == a.player[id].getRoom()) {
+                JSONObject player = new JSONObject();
+                player.put("playerId", i);
+                player.put("name", a.player[i].getName());
+                content.add(player);
+            }
+        }
+        JSONObject object = new JSONObject();
+        object.put("content", content);
+        return object;
     }
     
     public void sendHomeStatus() {
-        
+        JSONObject object = createHomeStatus();
+        broadcastToHome(object.toString());
     }
     
     public void sendRoomStatus() {
-        
+        JSONObject object = createRoomStatus();
+        broadcastToRoom(object.toString());
     }
     
     public void sendCanPlay() {
-        
+        JSONObject object = new JSONObject();
+        object.put("type", "can");
+        broadcastToRoom(object.toString());
     }
     
     public void sendDisablePlay() {
-        
+        JSONObject object = new JSONObject();
+        object.put("type", "disable");
+        broadcastToRoom(object.toString());
     }
     
-    public void play() {
-        
+    public void play(int playerId) {
+        JSONObject object = new JSONObject();
+        object.put("type", "play");
+        object.put("playerId", playerId);
+        object.put("name", a.player[playerId].getName());
+        broadcastToRoom(object.toString());
     }
     
     public void win(int playerId) {
-        
+        JSONObject object = new JSONObject();
+        object.put("type", "win");
+        object.put("playerId", playerId);
+        object.put("name", a.player[playerId].getName());
+        broadcastToRoom(object.toString());
     }
     
     /**
-     * Handle this disconnect
+     * Handle this socket if disconnect
+     * Action : unplay
      */
     public void disconnect() {
-        
+        JSONObject object = new JSONObject();
+        object.put("type", "unplay");
+        broadcastToRoom(object.toString());
+        sendRoomStatus();
     }
+    
+    /********************* THREAD *************************/
     
     public void run() {
         try {
@@ -120,13 +173,13 @@ class GomukuServerThread extends Thread {
             
             // Get player object from client;
             ois = new ObjectInputStream(is);
-            player = (Player) ois.readObject();
+            a.player[id] = (Player) ois.readObject();
             
             // Send id player object to client
             oos = new ObjectOutputStream(os);
             for(int i = 0; i < a.maxClientsCount; i++) {
                 if(a.threads[i] == this) {
-                    player.setId(i);
+                    a.player[id].setId(i);
                     oos.writeObject(new Integer(i));
                     break;
                 }
@@ -158,21 +211,20 @@ class GomukuServerThread extends Thread {
             }
             
             // User is leaving the room
-            broadcastToRoom(player.getName() + " is leaving the room");
+            broadcastToRoom(a.player[id].getName() + " is leaving the room");
             
             // Remove this thread from threads
-            a.threads[player.getId()] = null;
+            a.threads[a.player[id].getId()] = null;
+            is.close();
+            os.close();
+            ois.close();
+            oos.close();
+            clientSocket.close();
             
-
-
         } catch (Exception e) {
             disconnect();
             System.err.println(e);
         }
-        is.close();
-        os.close();
-        ois.close();
-        oos.close();
-        clientSocket.close();
+
     }
 }

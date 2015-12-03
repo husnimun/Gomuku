@@ -289,7 +289,7 @@ public class GomukuClient implements Runnable {
         }
     }
     
-    // Thread to receive data from server
+    /********************** THREAD TO RECEIVE DATA FROM SERVER **********************/
     public void run() {
         String responseLine;
         try {

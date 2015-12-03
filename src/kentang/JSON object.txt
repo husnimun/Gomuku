@@ -41,3 +41,18 @@ JSON object type
 - not :
 - turn : 
 - playing : roomId
+
+
+
+
+
+command in user :
+
+create
+join <number room>
+exit
+play
+
+message <message>
+<a> <b> 
+

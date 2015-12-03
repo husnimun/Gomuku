@@ -18,6 +18,9 @@ public class GameComponent {
     public static int[] playerCount = new int[maxRoomCount];
     public static boolean[] isPlaying = new boolean[maxRoomCount];
     public static Board[] boards = new Board[maxRoomCount];
+    // all player
+    public static Player[] player = new Player[maxClientsCount];
+    // players on spesific room, only when they'are playing
     public static int[][] players = new int[maxRoomCount][maxClientsCount];
     public static int roomCount = 0;
     
