@@ -9,13 +9,38 @@ package GUI;
  *
  * @author Fujitsu
  */
-public class WaitingRoom extends javax.swing.JFrame {
+public class WaitingRoom extends MyFrame {
 
     /**
      * Creates new form WaitingRoom
      */
     public WaitingRoom() {
         initComponents();
+    }
+    
+    public void printRoomList(String[] args)
+    {
+        String ret = "";
+        for(int i = 0; i < args.length; i++)
+        {
+            ret += args[i];
+        }
+        ListOfPlayerText.setText(ret);
+    }
+    
+    public void printLog(String[] args)
+    {
+        String ret = "";
+        for(int i = 0; i < args.length; i++)
+        {
+            ret += args[i];
+        }
+        LogText.append(ret);
+    }
+    
+    public void joinRoom(int roomId)
+    {
+        RoomIDLabel.setText(roomId + "");
     }
 
     /**
@@ -32,41 +57,62 @@ public class WaitingRoom extends javax.swing.JFrame {
         ListOfPlayerPane = new javax.swing.JScrollPane();
         ListOfPlayerText = new javax.swing.JTextArea();
         WaitingRoomLabel = new javax.swing.JLabel();
+        PlayButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        LogText = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
         PlayButton.setText("Play");
+        PlayButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PlayButtonActionPerformed(evt);
+            }
+        });
 
         RoomIDLabel.setText("Room ID");
 
         ListOfPlayerText.setEditable(false);
         ListOfPlayerText.setColumns(20);
+        ListOfPlayerText.setFont(new java.awt.Font("Consolas", 0, 13)); // NOI18N
         ListOfPlayerText.setRows(5);
-        ListOfPlayerText.setText("List of player\n1\n2\n3");
         ListOfPlayerPane.setViewportView(ListOfPlayerText);
 
         WaitingRoomLabel.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         WaitingRoomLabel.setText("Waiting Room");
+
+        PlayButton1.setText("Exit Room");
+        PlayButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PlayButton1ActionPerformed(evt);
+            }
+        });
+
+        LogText.setColumns(20);
+        LogText.setRows(5);
+        jScrollPane1.setViewportView(LogText);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(WaitingRoomLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(RoomIDLabel))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(ListOfPlayerPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(PlayButton)
-                        .addGap(0, 4, Short.MAX_VALUE)))
+                .addContainerGap()
+                .addComponent(WaitingRoomLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 275, Short.MAX_VALUE)
+                .addComponent(RoomIDLabel)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(ListOfPlayerPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(PlayButton)
+                    .addComponent(PlayButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -75,15 +121,35 @@ public class WaitingRoom extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(WaitingRoomLabel)
                     .addComponent(RoomIDLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(PlayButton)
-                    .addComponent(ListOfPlayerPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(PlayButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(PlayButton1)
+                        .addGap(34, 34, 34))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ListOfPlayerPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(13, Short.MAX_VALUE))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
+        // TODO add your handling code here:
+        adaCommand = true;
+        type = "play";
+    }//GEN-LAST:event_PlayButtonActionPerformed
+
+    private void PlayButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButton1ActionPerformed
+        // TODO add your handling code here:
+        adaCommand = true;
+        type = "exit";
+    }//GEN-LAST:event_PlayButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -123,8 +189,11 @@ public class WaitingRoom extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane ListOfPlayerPane;
     private javax.swing.JTextArea ListOfPlayerText;
+    private javax.swing.JTextArea LogText;
     private javax.swing.JButton PlayButton;
+    private javax.swing.JButton PlayButton1;
     private javax.swing.JLabel RoomIDLabel;
     private javax.swing.JLabel WaitingRoomLabel;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

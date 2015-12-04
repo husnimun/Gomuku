@@ -183,12 +183,19 @@ class GomukuServerThread extends Thread {
             os.println(not.toString());
             return;
         }
+        if(!a.boards[roomId].isValidMove(x, y)) {
+            JSONObject chat = new JSONObject();
+            chat.put("type", "chat");
+            chat.put("content", "Your move is invalid. Either out of the box or has been occupied.");
+            os.println(chat.toString());
+            return;
+        }
         boolean isWin = a.boards[roomId].add(x, y, playerId);
         object.put("name", a.player[playerId].getName());
         broadcastToRoom(object.toString());
         if(isWin) {
-            sendWin(playerId);
             unplay(roomId);
+            sendWin(playerId);
             sendRoomStatus();
             return;
         }
@@ -283,6 +290,7 @@ class GomukuServerThread extends Thread {
         JSONObject object = new JSONObject();
         object.put("type", "play");
         object.put("playerId", playerId);
+        object.put("roomId", a.player[playerId].getRoom());
         object.put("name", a.player[playerId].getName());
         broadcastToRoom(object.toString());
     }

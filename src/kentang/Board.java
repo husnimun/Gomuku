@@ -74,4 +74,8 @@ public class Board {
     private boolean isValid(int x, int y) {
         return 0 <= x && x < boardWidth && 0 <= y && y < boardHeight;
     }
+    
+    public boolean isValidMove(int x, int y) {
+        return isValid(x, y) && board[x][y] == -1;
+    }
 }

@@ -35,7 +35,7 @@ JSON object type
 - room : content (JSON Array of {playerId, name})
 - can : 
 - disable : 
-- play : playerId, name
+- play : playerId, name, roomId
 - unplay
 - win : playerId, name
 - not :

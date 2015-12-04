@@ -14,16 +14,53 @@ import javax.swing.JButton;
  *
  * @author Fujitsu
  */
-public class BoardGame extends javax.swing.JFrame {
+public class BoardGame extends MyFrame {
 
     /**
      * Creates new form BoardGame
      */
     public BoardGame() {
         initComponents();
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(BoardGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(BoardGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(BoardGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(BoardGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }
+
+    public void printLog(String[] args)
+    {
+        String ret = "";
+        for(int i = 0; i < args.length; i++)
+        {
+            ret += args[i];
+        }
+        ChatBoxText.append(ret);
     }
     
-    private static JButton buttons[] = new JButton[400];
+    public void drawCoordinate(int x, int y, int playerId)
+    {
+        int index = ((x * 20) + y);
+        buttons[index].setText(playerId + "");
+    }
+    
+    public void joinRoom(int roomId)
+    {
+        RoomIDLabel.setText(roomId + "");
+    }
+    
+    public static MyButton buttons[] = new MyButton[400];
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -156,9 +193,11 @@ public class BoardGame extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        for (int i = 0; i <= 399; i++)
+        for (int i = 0; i < 400; i++)
         {
             buttons[i] = new MyButton();
+            buttons[i].absis = (i / 20);
+            buttons[i].ordinat = (i % 20);
             BoardPanel.add(buttons[i]);
         }
 
@@ -168,6 +207,10 @@ public class BoardGame extends javax.swing.JFrame {
 
     private void ChatSendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChatSendButtonActionPerformed
         // TODO add your handling code here:
+        adaCommand = true;
+        type = "message";
+        paramString = ChatInputField.getText();
+        ChatInputField.setText(" ");
     }//GEN-LAST:event_ChatSendButtonActionPerformed
 
     private void ChatInputFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChatInputFieldActionPerformed
@@ -183,22 +226,6 @@ public class BoardGame extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(BoardGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(BoardGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(BoardGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(BoardGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
         //</editor-fold>
 
         /* Create and display the form */
@@ -208,15 +235,15 @@ public class BoardGame extends javax.swing.JFrame {
             }
         });
     }
-    
-public static int player = 1;
 
-    private static class MyButton extends JButton implements ActionListener
+    public class MyButton extends JButton implements ActionListener
     {
         int playagain = 1000;
         boolean win = false;
         boolean end = false;
         String letter;
+        public int absis;
+        public int ordinat;
         public MyButton()
         {
             super();
@@ -228,61 +255,12 @@ public static int player = 1;
 
         public void actionPerformed(ActionEvent e)
         {
-            if (player == 1)
-            {
-                while (end == false)
-                {
-                    if ((getText().equals(" ")) && (win == false))
-                    {
-                        letter = "A";
-                        setText(letter);
-                        player = player + 1;
-                    }
-                    else
-                    {
-
-                    }
-                    end = true;
-                }
-            }
-            else
-            if (player == 2)
-            {
-                while (end == false)
-                {
-                    if ((getText().equals(" ")) && (win == false))
-                    {
-                        letter = "B";
-                        setText(letter);
-                        player = player + 1;
-                    }
-                    else
-                    {
-
-                    }
-                    end = true;
-                }
-            }
-            else
-            if (player == 3)
-            {
-                while (end == false)
-                {
-                    if ((getText().equals(" ")) && (win == false))
-                    {
-                        letter = "C";
-                        setText(letter);
-                        player = 1;
-                    }
-                    else
-                    {
-
-                    }
-                    end = true;
-                }
-            }
-            end = false;
-            //setText(letter);
+            adaCommand = true;
+            type = "coordinate";
+            paramInt[0] = absis;
+            paramInt[1] = ordinat;
+            
+            //System.out.println("absis = " + absis + " ordinat = " + ordinat);
         }
     }
 

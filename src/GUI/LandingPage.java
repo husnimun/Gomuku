@@ -5,33 +5,47 @@
  */
 package GUI;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import static kentang.GomukuClient.is;
+import static kentang.GomukuClient.os;
+import static kentang.GomukuClient.socket;
+
 /**
  *
  * @author Fujitsu
  */
-public class LandingPage extends javax.swing.JFrame {
-    
-    private String host;
-    private int port;
-    private String name;
-    
-    /*********************** GETTER SETTER ***********************/
-    public String getHost() {
-        return host;
-    }
-    public int getPort() {
-        return port;
-    }
-    public String getName() {
-        return name;
-    }
-    
+public class LandingPage extends MyFrame {
+
     /**
      * Creates new form LandingPage
      */
     public LandingPage() {
         initComponents();
     }
+    
+    //
+    String name, host;
+    int port;
+    
+    public String getName()
+    {
+        return name;
+    }
+    
+    public String getHost()
+    {
+        return host;
+    }
+    
+    public int getPort()
+    {
+        return port;
+    }
+    //
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -52,30 +66,25 @@ public class LandingPage extends javax.swing.JFrame {
         ConnectButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Gomoku");
+        setTitle("Gomuku");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setResizable(false);
 
-        PortTextField.setText("port");
+        PortTextField.setText("8000");
         PortTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 PortTextFieldActionPerformed(evt);
             }
         });
 
-        HostTextField.setText("host");
-        HostTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                HostTextFieldActionPerformed(evt);
+        HostTextField.setText("localhost");
+        HostTextField.addContainerListener(new java.awt.event.ContainerAdapter() {
+            public void componentAdded(java.awt.event.ContainerEvent evt) {
+                HostFieldContain(evt);
             }
         });
 
-        NameTextField.setText("Insert your name here");
-        NameTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NameTextFieldActionPerformed(evt);
-            }
-        });
+        NameTextField.setText("Raka");
 
         HostLabel.setText("Host");
 
@@ -89,9 +98,9 @@ public class LandingPage extends javax.swing.JFrame {
 
         ConnectButton.setText("Connect");
         ConnectButton.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        ConnectButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ConnectButtonActionPerformed(evt);
+        ConnectButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ConnectClicked(evt);
             }
         });
 
@@ -144,25 +153,22 @@ public class LandingPage extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void HostTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HostTextFieldActionPerformed
-        
-    }//GEN-LAST:event_HostTextFieldActionPerformed
-
     private void PortTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PortTextFieldActionPerformed
-        
+        // TODO add your handling code here:
     }//GEN-LAST:event_PortTextFieldActionPerformed
 
-    private void ConnectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConnectButtonActionPerformed
+    private void ConnectClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ConnectClicked
+        // TODO add your handling code here:
         name = NameTextField.getText();
         host = HostTextField.getText();
         port = Integer.parseInt(PortTextField.getText());
-        
-        setVisible(false);
-    }//GEN-LAST:event_ConnectButtonActionPerformed
+        this.setVisible(false);
+    }//GEN-LAST:event_ConnectClicked
 
-    private void NameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NameTextFieldActionPerformed
-    
-    }//GEN-LAST:event_NameTextFieldActionPerformed
+    private void HostFieldContain(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_HostFieldContain
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_HostFieldContain
 
     /**
      * @param args the command line arguments

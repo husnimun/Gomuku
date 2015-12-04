@@ -53,7 +53,7 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="for (int i = 0; i &lt;= 399; i++)&#xa;        {&#xa;            buttons[i] = new MyButton();&#xa;            BoardPanel.add(buttons[i]);&#xa;        }"/>
+        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="for (int i = 0; i &lt; 400; i++)&#xa;        {&#xa;            buttons[i] = new MyButton();&#xa;            buttons[i].absis = (i / 20);&#xa;            buttons[i].ordinat = (i % 20);&#xa;            BoardPanel.add(buttons[i]);&#xa;        }"/>
       </AuxValues>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">

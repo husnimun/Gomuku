@@ -32,11 +32,16 @@ public class GomukuClient implements Runnable {
     public static boolean canPlay = false;
     public static boolean isPlaying = false;
     
+    public static GUI.MyFrame activePage = null;
+    
     /********************** HANDLE REQUEST TO SERVER **********************/
     
     public static void createRoom() {
         if(player.getRoom() != 0) {
-            System.out.println("You cannot create room. Please exit current room.");
+            String[] args = new String[1];
+            args[0] = "You cannot create room. Please exit current room.";
+            activePage.printLog(args);
+            System.out.println(args[0]);
             return;
         }
         JSONObject message = new JSONObject();
@@ -47,7 +52,10 @@ public class GomukuClient implements Runnable {
     
     public static void joinRoom(int roomId) {
         if(player.getRoom() != 0) {
-            System.out.println("You cannot join room. Please exit current room.");
+            String[] args = new String[1];
+            args[0] = "You cannot join room. Please exit current room.";
+            activePage.printLog(args);
+            System.out.println(args[0]);
             return;
         }
         JSONObject message = new JSONObject();
@@ -59,7 +67,10 @@ public class GomukuClient implements Runnable {
     
     public static void exitRoom() {
         if(player.getRoom() == 0) {
-            System.out.println("You are not belong to any spesific room.");
+            String[] args = new String[1];
+            args[0] = "You are not belong to any spesific room.";
+            activePage.printLog(args);
+            System.out.println(args[0]);
             return;
         }
         JSONObject message = new JSONObject();
@@ -70,11 +81,17 @@ public class GomukuClient implements Runnable {
     
     public static void clickPlay() {
         if(player.getRoom() == 0) {
-            System.out.println("You cannot play. Enter the room first.");
+            String[] args = new String[1];
+            args[0] = "You cannot play. Enter the room first.";
+            activePage.printLog(args);
+            System.out.println(args[0]);
             return;
         }
         if(!canPlay) {
-            System.out.println("You cannot play. Minimum player in the room should be 3.");
+            String[] args = new String[1];
+            args[0] = "You cannot play. Minimum player in the room should be 3.";
+            activePage.printLog(args);
+            System.out.println(args[0]);
             return;
         }
         JSONObject message = new JSONObject();
@@ -113,6 +130,10 @@ public class GomukuClient implements Runnable {
         String name = (String) object.get("name");
         String content = (String) object.get("content");
         System.out.format("> %s : %s\n", name, content);
+        
+        String[] args = new String[1];
+        args[0] = String.format("> %s : %s\n", name, content);
+        activePage.printLog(args);
     }
     
     public static void addCoordinate(JSONObject object) {
@@ -125,16 +146,30 @@ public class GomukuClient implements Runnable {
         board.add(i, j, playerId);
         board.print();
         System.out.format("%s taking turn at (%d, %d)\n", name, i, j);
+        
+        activePage.drawCoordinate(i, j, playerId);
+        String[] args = new String[1];
+        args[0] = String.format("%s taking turn at (%d, %d)\n", name, i, j);
+        activePage.printLog(args);
     }
     
     public static void joinRoom(JSONObject object) {
         int playerId = ((Long) object.get("playerId")).intValue();
         int roomId = ((Long) object.get("roomId")).intValue();
+        String[] args = new String[1];
+        activePage.setVisible(false);
         if(roomId == 0) {
             System.out.format("You have exited from room %d\n", player.getRoom());
+            args[0] = String.format("You have exited from room %d\n", player.getRoom());
+            activePage = new GUI.Lobby();
         } else {
+            activePage = new GUI.WaitingRoom();
             System.out.format("You entered room %d\n", roomId);
+            activePage.joinRoom(roomId);
+            args[0] = String.format("You entered room %d\n", roomId);
         }
+        activePage.setVisible(true);
+        activePage.printLog(args);
         player.setRoom(roomId);
     }
     
@@ -143,16 +178,23 @@ public class GomukuClient implements Runnable {
         int size = rooms.size();
         if(size == 0) {
             System.out.println("There is no room active");
+            String[] args = new String[1];
+            args[0] = "There is no room active\n";
+            activePage.printRoomList(args);
             return;
-        } 
+        }
+        String[] args = new String[size + 1];
         System.out.format("%7s | %17s | %9s\n", "Room ID", "Number of Players", "isPlaying");
+        args[0] = String.format("%7s | %17s | %9s\n", "Room ID", "Number of Players", "isPlaying");
         for(int i = 0; i < size; i++) {
             JSONObject room = (JSONObject) rooms.get(i);
             int roomId = ((Long) room.get("roomId")).intValue();
             int playerCount = ((Long) room.get("playerCount")).intValue();
             boolean isPlaying = (boolean) room.get("isPlaying");
             System.out.format("%7s | %17s | %9s\n", roomId, playerCount, isPlaying);
+            args[i + 1] = String.format("%7s | %17s | %9s\n", roomId, playerCount, isPlaying);
         }
+        activePage.printRoomList(args);
         System.out.println();
     }
     
@@ -161,63 +203,112 @@ public class GomukuClient implements Runnable {
         int size = players.size();
         if(size == 0) {
             System.out.println("There is no player in this room yet.");
+            String[] args = new String[1];
+            args[0] = "There is no player in this room yet.\n";
+            activePage.printRoomList(args);
             return;
         } 
+        String[] args = new String[size + 1];
         System.out.format("%2s | Name\n", "ID");
+        args[0] = String.format("%2s | Name\n", "ID");
         for(int i = 0; i < size; i++) {
             JSONObject room = (JSONObject) players.get(i);
             int playerId = ((Long) room.get("playerId")).intValue();
             String name = (String) room.get("name");
             System.out.format("%2s | %15s\n", playerId, name);
+            args[i + 1] = String.format("%2s | %15s\n", playerId, name);
         }
+        activePage.printRoomList(args);
         System.out.println();
     }
     
     public static void canPlay(JSONObject object) {
         canPlay = true;
         System.out.println("TYPE \"play\" to START THE GAME!");
+        
+        String[] args = new String[1];
+        args[0] = "TYPE \"play\" to START THE GAME!\n";
+        activePage.printLog(args);
     }
     
     public static void disablePlay(JSONObject object) {
         canPlay = false;
         System.out.println("Cannot start the game. Waiting other player...");
+        
+        String[] args = new String[1];
+        args[0] = "Cannot start the game. Waiting other player...\n";
+        activePage.printLog(args);
     }
     
     public static void play(JSONObject object) {
         int playerId = ((Long) object.get("playerId")).intValue();
+        int roomId = ((Long) object.get("roomId")).intValue();
         String name = (String) object.get("name");
         board = new Board();
         board.print();
+        
+        activePage.setVisible(false);
+        activePage = new GUI.BoardGame();
+        activePage.joinRoom(roomId);
+        activePage.setVisible(true);
+        
         System.out.format("%s (ID = %d) start the game!\n", name, playerId);
         isPlaying = true;
+        String[] args = new String[1];
+        args[0] = String.format("%s (ID = %d) start the game!\n", name, playerId);
+        activePage.printLog(args);
     }
     
     public static void unplay(JSONObject object) {
         isPlaying = false;
         System.out.println("The game has been ended!");
+        
+        activePage.setVisible(false);
+        activePage = new GUI.WaitingRoom();
+        activePage.setVisible(true);
+        
+        String[] args = new String[1];
+        args[0] = "The game has been ended!\n";
+        activePage.printLog(args);
     }
     
     public static void win(JSONObject object) {
         int playerId = ((Long) object.get("playerId")).intValue();
         String name = (String) object.get("name");
+        String[] args = new String[1];
         if(playerId == player.getId()) {
             System.out.println("You won the game!");
+            args[0] = "You won the game!\n";
         } else {
             System.out.format("You lost! %s win the game!\n", name);
+            args[0] = String.format("You lost! %s win the game!\n", name);
         }
+        activePage.printLog(args);
     }
     
     public static void not(JSONObject object) {
         System.out.println("It's not your turn.");
+        
+        String[] args = new String[1];
+        args[0] = "It's not your turn.\n";
+        activePage.printLog(args);
     }
     
     public static void turn(JSONObject object) {
         System.out.println("It's your turn!");
+        
+        String[] args = new String[1];
+        args[0] = "It's your turn!\n";
+        activePage.printLog(args);
     }
     
     public static void playing(JSONObject object) {
         int roomId = ((Long) object.get("roomId")).intValue();
         System.out.format("You cannot enter room %d, they are playing.\n", roomId);
+        
+        String[] args = new String[1];
+        args[0] = String.format("You cannot enter room %d, they are playing.\n", roomId);
+        activePage.printLog(args);
     }
     
     public static void main(String args[]) {
@@ -236,12 +327,13 @@ public class GomukuClient implements Runnable {
                 System.err.println(e);
             }
         }
+        String name = landingPage.getName();
+        host = landingPage.getHost();
+        port = landingPage.getPort();
         
         Scanner reader = new Scanner(System.in);
         
         player = new Player(landingPage.getName());
-        System.out.println("Connecting to " + landingPage.getHost() + " port: " + landingPage.getPort());
-        
         
         // Create socket
         try {
@@ -253,6 +345,9 @@ public class GomukuClient implements Runnable {
         } catch (IOException e) {
             System.err.println(e);
         }
+        
+        activePage = (GUI.MyFrame) new GUI.Lobby();
+        activePage.setVisible(true);
         
         // Read and write data through socket
         try {
@@ -274,20 +369,24 @@ public class GomukuClient implements Runnable {
             
             // Send data through socket
             while (!closed) {
-                String console = reader.nextLine();
-                String[] command = console.split(" ", 2);
-                if(command[0].equals("create")) {
+                while(!activePage.adaCommand) {
+                    Thread.sleep(500);
+                }
+                activePage.adaCommand = false;
+                String type = activePage.type;
+                if(type.equals("create")) {
                     createRoom();
-                } else if(command[0].equals("join")) {
-                    joinRoom(Integer.parseInt(command[1]));
-                } else if(command[0].equals("exit")) {
+                } else if(type.equals("join")) {
+                    System.out.println("Mau masuk room " + activePage.paramInt[0]);
+                    joinRoom(activePage.paramInt[0]);
+                } else if(type.equals("exit")) {
                     exitRoom();
-                } else if(command[0].equals("play")) {
+                } else if(type.equals("play")) {
                     clickPlay();
-                } else if(command[0].equals("message")) {
-                    sendChat(command[1]);
+                } else if(type.equals("message")) {
+                    sendChat(activePage.paramString);
                 } else {    // sending coordinate
-                    sendCoordinate(Integer.parseInt(command[0]), Integer.parseInt(command[1]));
+                    sendCoordinate(activePage.paramInt[0], activePage.paramInt[1]);
                 }
             }
             

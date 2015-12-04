@@ -10,7 +10,7 @@ package kentang;
  * @author Luqman A. Siswanto
  */
 public class GameComponent {
-    public static final int maxClientsCount = 3;
+    public static final int maxClientsCount = 10;
     public static final int maxRoomCount = 5;
     
     public static GomukuServerThread[] threads = new GomukuServerThread[maxClientsCount];
