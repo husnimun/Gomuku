@@ -101,6 +101,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Insert your name here"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="NameTextFieldActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="HostLabel">
       <Properties>
@@ -133,6 +136,9 @@
           <Color id="Default Cursor"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ConnectButtonActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

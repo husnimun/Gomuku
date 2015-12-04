@@ -225,12 +225,23 @@ public class GomukuClient implements Runnable {
         int port = 8000;
         board = new Board();
         
-        // Get name and room id
+        // Get host, port, and player name
+        GUI.LandingPage landingPage = new GUI.LandingPage();
+        landingPage.setVisible(true);
+        
+        while(landingPage.isShowing()) {
+            try {
+                Thread.sleep(500);
+            } catch (Exception e) {
+                System.err.println(e);
+            }
+        }
+        
         Scanner reader = new Scanner(System.in);
-        System.out.println("Insert your name: ");
-        String name = reader.nextLine();
-
-        player = new Player(name);
+        
+        player = new Player(landingPage.getName());
+        System.out.println("Connecting to " + landingPage.getHost() + " port: " + landingPage.getPort());
+        
         
         // Create socket
         try {
