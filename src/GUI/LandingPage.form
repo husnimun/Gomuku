@@ -3,7 +3,7 @@
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="title" type="java.lang.String" value="Gomuku"/>
+    <Property name="title" type="java.lang.String" value="Gomuku Game of the Kentang"/>
     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
       <Color id="Default Cursor"/>
     </Property>
@@ -30,26 +30,28 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="2" attributes="0">
-                  <Component id="ConnectButton" alignment="2" min="-2" max="-2" attributes="0"/>
-                  <Component id="LandingPageTitle" alignment="2" max="32767" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <Component id="LandingPageTitle" pref="580" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
-          <Group type="102" attributes="0">
-              <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="HostLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="PortLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="NameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="195" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="2" attributes="0">
+                  <Component id="ConnectButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="2" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="HostLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="PortLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="NameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="NameTextField" max="32767" attributes="0"/>
+                          <Component id="PortTextField" max="32767" attributes="0"/>
+                          <Component id="HostTextField" min="-2" pref="174" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="NameTextField" pref="174" max="32767" attributes="0"/>
-                  <Component id="PortTextField" max="32767" attributes="0"/>
-                  <Component id="HostTextField" max="32767" attributes="0"/>
-              </Group>
-              <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -58,7 +60,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="LandingPageTitle" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="HostLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="HostTextField" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -75,7 +77,7 @@
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="ConnectButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="38" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -101,6 +103,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Raka"/>
       </Properties>
+      <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="EnterPressed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="HostLabel">
       <Properties>
@@ -123,7 +128,7 @@
           <Font name="Tahoma" size="24" style="1"/>
         </Property>
         <Property name="horizontalAlignment" type="int" value="0"/>
-        <Property name="text" type="java.lang.String" value="GOMOKU"/>
+        <Property name="text" type="java.lang.String" value="Gomuku Game of the Kentang"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="ConnectButton">

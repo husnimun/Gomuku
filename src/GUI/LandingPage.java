@@ -5,14 +5,12 @@
  */
 package GUI;
 
+import java.awt.event.KeyEvent;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import static kentang.GomukuClient.is;
-import static kentang.GomukuClient.os;
-import static kentang.GomukuClient.socket;
 
 /**
  *
@@ -66,7 +64,7 @@ public class LandingPage extends MyFrame {
         ConnectButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Gomuku");
+        setTitle("Gomuku Game of the Kentang");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setResizable(false);
 
@@ -85,6 +83,11 @@ public class LandingPage extends MyFrame {
         });
 
         NameTextField.setText("Raka");
+        NameTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                EnterPressed(evt);
+            }
+        });
 
         HostLabel.setText("Host");
 
@@ -94,7 +97,7 @@ public class LandingPage extends MyFrame {
 
         LandingPageTitle.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         LandingPageTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        LandingPageTitle.setText("GOMOKU");
+        LandingPageTitle.setText("Gomuku Game of the Kentang");
 
         ConnectButton.setText("Connect");
         ConnectButton.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -110,29 +113,30 @@ public class LandingPage extends MyFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(ConnectButton)
-                    .addComponent(LandingPageTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addComponent(LandingPageTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(HostLabel)
-                    .addComponent(PortLabel)
-                    .addComponent(NameLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(NameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
-                    .addComponent(PortTextField)
-                    .addComponent(HostTextField))
-                .addGap(10, 10, 10))
+                .addGap(195, 195, 195)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(ConnectButton, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(HostLabel)
+                            .addComponent(PortLabel)
+                            .addComponent(NameLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(NameTextField)
+                            .addComponent(PortTextField)
+                            .addComponent(HostTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(LandingPageTitle)
-                .addGap(18, 18, 18)
+                .addGap(32, 32, 32)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(HostLabel)
                     .addComponent(HostTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -146,7 +150,7 @@ public class LandingPage extends MyFrame {
                     .addComponent(NameLabel))
                 .addGap(18, 18, 18)
                 .addComponent(ConnectButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         pack();
@@ -169,6 +173,17 @@ public class LandingPage extends MyFrame {
         // TODO add your handling code here:
         
     }//GEN-LAST:event_HostFieldContain
+
+    private void EnterPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_EnterPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER)
+        {
+            name = NameTextField.getText();
+            host = HostTextField.getText();
+            port = Integer.parseInt(PortTextField.getText());
+            this.setVisible(false);
+        }
+    }//GEN-LAST:event_EnterPressed
 
     /**
      * @param args the command line arguments

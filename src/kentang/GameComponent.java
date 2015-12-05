@@ -10,8 +10,8 @@ package kentang;
  * @author Luqman A. Siswanto
  */
 public class GameComponent {
-    public static final int maxClientsCount = 10;
-    public static final int maxRoomCount = 5;
+    public static final int maxClientsCount = 20;
+    public static final int maxRoomCount = 30;
     
     public static GomukuServerThread[] threads = new GomukuServerThread[maxClientsCount];
     public static int[] playerNow = new int[maxRoomCount];
@@ -22,6 +22,7 @@ public class GameComponent {
     public static Player[] player = new Player[maxClientsCount];
     // players on spesific room, only when they'are playing
     public static int[][] players = new int[maxRoomCount][maxClientsCount];
+    public static int[] virtual = new int[maxClientsCount];
     public static int roomCount = 0;
     
     public GameComponent() {

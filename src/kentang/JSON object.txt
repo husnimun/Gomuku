@@ -30,7 +30,7 @@ JSON object type
 - chat : playerId, roomId, name, content (String)
 - coordinate : playerId, roomId, name, content (JSON Array)
 
-- join : playerId, roomId
+- join : playerId, roomId, name
 - home : content (JSON Array of {roomId, playerCount, isPlaying})
 - room : content (JSON Array of {playerId, name})
 - can : 

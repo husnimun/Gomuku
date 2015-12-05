@@ -42,6 +42,11 @@ public class WaitingRoom extends MyFrame {
     {
         RoomIDLabel.setText(roomId + "");
     }
+    
+    public void sendPlayerData(String name, int virtualId)
+    {
+        NameLabel.setText(name);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -56,12 +61,21 @@ public class WaitingRoom extends MyFrame {
         RoomIDLabel = new javax.swing.JLabel();
         ListOfPlayerPane = new javax.swing.JScrollPane();
         ListOfPlayerText = new javax.swing.JTextArea();
-        WaitingRoomLabel = new javax.swing.JLabel();
+        TitleLabel = new javax.swing.JLabel();
         PlayButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         LogText = new javax.swing.JTextArea();
+        jSeparator1 = new javax.swing.JSeparator();
+        jLabel1 = new javax.swing.JLabel();
+        WelcomeLabel = new javax.swing.JLabel();
+        NameLabel = new javax.swing.JLabel();
+        WaitingRoomLabel = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Gomuku - Waiting Room");
         setResizable(false);
 
         PlayButton.setText("Play");
@@ -71,16 +85,18 @@ public class WaitingRoom extends MyFrame {
             }
         });
 
-        RoomIDLabel.setText("Room ID");
+        RoomIDLabel.setText("ID");
 
         ListOfPlayerText.setEditable(false);
         ListOfPlayerText.setColumns(20);
         ListOfPlayerText.setFont(new java.awt.Font("Consolas", 0, 13)); // NOI18N
+        ListOfPlayerText.setLineWrap(true);
         ListOfPlayerText.setRows(5);
+        ListOfPlayerText.setWrapStyleWord(true);
         ListOfPlayerPane.setViewportView(ListOfPlayerText);
 
-        WaitingRoomLabel.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        WaitingRoomLabel.setText("Waiting Room");
+        TitleLabel.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        TitleLabel.setText("GotK");
 
         PlayButton1.setText("Exit Room");
         PlayButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -89,9 +105,30 @@ public class WaitingRoom extends MyFrame {
             }
         });
 
+        LogText.setEditable(false);
         LogText.setColumns(20);
-        LogText.setRows(5);
+        LogText.setLineWrap(true);
+        LogText.setRows(4);
+        LogText.setWrapStyleWord(true);
+        LogText.setDragEnabled(true);
         jScrollPane1.setViewportView(LogText);
+
+        jLabel1.setLabelFor(RoomIDLabel);
+        jLabel1.setText("Room");
+
+        WelcomeLabel.setText("Welcome");
+
+        NameLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        NameLabel.setText("jLabel3");
+
+        WaitingRoomLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        WaitingRoomLabel.setText("Waiting Room");
+
+        jLabel2.setText("Room List");
+
+        jLabel3.setText("Log");
+
+        jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -99,41 +136,79 @@ public class WaitingRoom extends MyFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(WaitingRoomLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 275, Short.MAX_VALUE)
-                .addComponent(RoomIDLabel)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(TitleLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(WaitingRoomLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(WelcomeLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(RoomIDLabel))
+                            .addComponent(NameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(19, 19, 19))
+                    .addComponent(jSeparator1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jLabel2))
+                            .addComponent(ListOfPlayerPane, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(PlayButton, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(0, 5, Short.MAX_VALUE)
+                                        .addComponent(jLabel3)
+                                        .addGap(178, 178, 178))
+                                    .addComponent(jScrollPane1)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(PlayButton1)))))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(ListOfPlayerPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(PlayButton)
-                    .addComponent(PlayButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(WaitingRoomLabel)
-                    .addComponent(RoomIDLabel))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(PlayButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(PlayButton1)
-                        .addGap(34, 34, 34))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(TitleLabel)
+                        .addComponent(WaitingRoomLabel))
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ListOfPlayerPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(13, Short.MAX_VALUE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(RoomIDLabel)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(NameLabel)
+                            .addComponent(WelcomeLabel))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(PlayButton1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ListOfPlayerPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(PlayButton))
+                    .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         pack();
@@ -190,10 +265,18 @@ public class WaitingRoom extends MyFrame {
     private javax.swing.JScrollPane ListOfPlayerPane;
     private javax.swing.JTextArea ListOfPlayerText;
     private javax.swing.JTextArea LogText;
+    private javax.swing.JLabel NameLabel;
     private javax.swing.JButton PlayButton;
     private javax.swing.JButton PlayButton1;
     private javax.swing.JLabel RoomIDLabel;
+    private javax.swing.JLabel TitleLabel;
     private javax.swing.JLabel WaitingRoomLabel;
+    private javax.swing.JLabel WelcomeLabel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     // End of variables declaration//GEN-END:variables
 }

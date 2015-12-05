@@ -70,6 +70,7 @@ class GomukuServerThread extends Thread {
         
         JSONObject message = new JSONObject();
         message.put("type", "join");
+        message.put("name", a.player[playerId].getName());
         message.put("playerId", playerId);
         message.put("roomId", roomId);
         os.println(message.toString());
@@ -81,7 +82,8 @@ class GomukuServerThread extends Thread {
         int playerId = ((Long) object.get("playerId")).intValue();
         int roomId = ((Long) object.get("roomId")).intValue();
         
-        if(a.isPlaying[roomId] || roomId < 0 || roomId > a.roomCount) {
+        if(roomId < 0 || roomId > a.roomCount || a.isPlaying[roomId]) {
+            System.out.println("Masuk room gagal");
             JSONObject message = new JSONObject();
             message.put("type", "playing");
             message.put("roomId", roomId);
@@ -96,6 +98,8 @@ class GomukuServerThread extends Thread {
         JSONObject join = new JSONObject();
         join.put("type", "join");
         join.put("playerId", playerId);
+        System.out.println("Dia adalah " + a.player[playerId].getName());
+        join.put("name", a.player[playerId].getName());
         join.put("roomId", roomId);
         os.println(join.toString());
         
@@ -124,6 +128,7 @@ class GomukuServerThread extends Thread {
         
         JSONObject join = new JSONObject();
         join.put("type", "join");
+        join.put("name", a.player[playerId].getName());
         join.put("playerId", playerId);
         join.put("roomId", 0);
         os.println(join.toString());
@@ -154,13 +159,16 @@ class GomukuServerThread extends Thread {
         int ke = 0;
         for(int i = 0; i < a.maxClientsCount; i++) {
             if(a.threads[i] != null && roomId == a.player[i].getRoom()) {
-                a.players[roomId][ke++] = i;
+                a.players[roomId][ke] = i;
+                a.virtual[i] = ke;
+                ke++;
             }
         }
         
         sendPlay(playerId);
         sendTurn(a.players[roomId][0]);
         sendHomeStatus();
+        sendRoomStatus();
     }
     
     public void chat(JSONObject object) {
@@ -186,17 +194,22 @@ class GomukuServerThread extends Thread {
         if(!a.boards[roomId].isValidMove(x, y)) {
             JSONObject chat = new JSONObject();
             chat.put("type", "chat");
+            chat.put("playerId", 0);
+            chat.put("roomId", roomId);
+            chat.put("name", "admin");
             chat.put("content", "Your move is invalid. Either out of the box or has been occupied.");
             os.println(chat.toString());
             return;
         }
         boolean isWin = a.boards[roomId].add(x, y, playerId);
         object.put("name", a.player[playerId].getName());
+        object.put("virtualId", a.virtual[playerId]);
         broadcastToRoom(object.toString());
         if(isWin) {
             unplay(roomId);
             sendWin(playerId);
             sendRoomStatus();
+            sendHomeStatus();
             return;
         }
         ke = (ke + 1) % a.playerCount[roomId];
@@ -290,9 +303,14 @@ class GomukuServerThread extends Thread {
         JSONObject object = new JSONObject();
         object.put("type", "play");
         object.put("playerId", playerId);
-        object.put("roomId", a.player[playerId].getRoom());
+        int roomId = a.player[playerId].getRoom();
+        object.put("roomId", roomId);
         object.put("name", a.player[playerId].getName());
-        broadcastToRoom(object.toString());
+        for(int i = 0; i < a.playerCount[roomId]; i++) {
+            int toSend = a.players[roomId][i];
+            object.put("virtualId", i);
+            a.threads[toSend].os.println(object.toString());
+        }
     }
     
     public void sendWin(int playerId) {
@@ -314,7 +332,6 @@ class GomukuServerThread extends Thread {
         object.put("type", "unplay");
         a.isPlaying[roomId] = false;
         broadcastToRoom(object.toString());
-        sendRoomStatus();
     }
     
     /********************* THREAD *************************/

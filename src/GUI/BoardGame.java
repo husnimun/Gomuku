@@ -6,9 +6,15 @@
 package GUI;
 
 import java.awt.Font;
+import java.awt.Color;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import javax.swing.JButton;
+import javax.swing.text.DefaultCaret;
 
 /**
  *
@@ -21,24 +27,22 @@ public class BoardGame extends MyFrame {
      */
     public BoardGame() {
         initComponents();
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(BoardGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(BoardGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(BoardGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(BoardGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
     }
-
+    
+    public int virtualId;
+    public Color[] colors = {Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.GREEN, Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW};
+    
+    
+    public void printRoomList(String[] args)
+    {
+        String ret = "";
+        for(int i = 0; i < args.length; i++)
+        {
+            ret += args[i];
+        }
+        ListOfPlayerText.setText(ret);
+    }
+    
     public void printLog(String[] args)
     {
         String ret = "";
@@ -49,15 +53,25 @@ public class BoardGame extends MyFrame {
         ChatBoxText.append(ret);
     }
     
-    public void drawCoordinate(int x, int y, int playerId)
+    public void drawCoordinate(int x, int y, int virtualId)
     {
         int index = ((x * 20) + y);
-        buttons[index].setText(playerId + "");
+        //buttons[index].setText(playerId + "");
+        buttons[index].setBackground(colors[virtualId]);
     }
     
     public void joinRoom(int roomId)
     {
         RoomIDLabel.setText(roomId + "");
+    }
+    
+    public void sendPlayerData(String name, int virtualId)
+    {
+        this.virtualId = virtualId;
+        PlayerIDLabel.setText((virtualId+1) + "");
+        
+        NameLabel.setText(name);
+        NameLabel.setForeground(colors[virtualId]);
     }
     
     public static MyButton buttons[] = new MyButton[400];
@@ -82,11 +96,11 @@ public class BoardGame extends MyFrame {
         ChatInputField = new javax.swing.JTextField();
         ChatBoxLabel = new javax.swing.JLabel();
         ChatSendButton = new javax.swing.JButton();
-        WhosTurnPane = new javax.swing.JScrollPane();
-        WhosTurnText = new javax.swing.JTextArea();
-        WhosTurnLabel = new javax.swing.JLabel();
+        PlayerIDLabel = new javax.swing.JLabel();
+        NameLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Gomuku - Play");
         setResizable(false);
 
         BoardPanel.setPreferredSize(new java.awt.Dimension(900, 700));
@@ -94,20 +108,30 @@ public class BoardGame extends MyFrame {
 
         ListOfPlayerText.setEditable(false);
         ListOfPlayerText.setColumns(20);
+        ListOfPlayerText.setLineWrap(true);
         ListOfPlayerText.setRows(5);
-        ListOfPlayerText.setText("List of Player");
         ListOfPlayerPane.setViewportView(ListOfPlayerText);
 
         RoomIDLabel.setText("Room ID");
 
         ChatBoxText.setEditable(false);
         ChatBoxText.setColumns(20);
-        ChatBoxText.setRows(5);
+        ChatBoxText.setLineWrap(true);
+        ChatBoxText.setRows(24);
+        ChatBoxText.setWrapStyleWord(true);
+        ChatBoxText.setDragEnabled(true);
         ChatBoxPane.setViewportView(ChatBoxText);
+        DefaultCaret caret = (DefaultCaret)ChatBoxText.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         ChatInputField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ChatInputFieldActionPerformed(evt);
+            }
+        });
+        ChatInputField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                EnterPressed(evt);
             }
         });
 
@@ -120,12 +144,9 @@ public class BoardGame extends MyFrame {
             }
         });
 
-        WhosTurnText.setEditable(false);
-        WhosTurnText.setColumns(20);
-        WhosTurnText.setRows(1);
-        WhosTurnPane.setViewportView(WhosTurnText);
+        PlayerIDLabel.setText("PID");
 
-        WhosTurnLabel.setText("Turn");
+        NameLabel.setText("jLabel2");
 
         javax.swing.GroupLayout InfoGamePanelLayout = new javax.swing.GroupLayout(InfoGamePanel);
         InfoGamePanel.setLayout(InfoGamePanelLayout);
@@ -133,39 +154,36 @@ public class BoardGame extends MyFrame {
             InfoGamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(InfoGamePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(InfoGamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(RoomIDLabel)
-                    .addGroup(InfoGamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(InfoGamePanelLayout.createSequentialGroup()
-                            .addComponent(ChatInputField, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(ChatSendButton))
-                        .addComponent(ChatBoxPane)
-                        .addComponent(ListOfPlayerPane)
-                        .addComponent(ChatBoxLabel)))
+                .addGroup(InfoGamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(InfoGamePanelLayout.createSequentialGroup()
+                        .addComponent(PlayerIDLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(NameLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(RoomIDLabel))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, InfoGamePanelLayout.createSequentialGroup()
+                        .addComponent(ChatInputField, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ChatSendButton))
+                    .addComponent(ChatBoxPane, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ListOfPlayerPane, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ChatBoxLabel, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, InfoGamePanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(WhosTurnLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(WhosTurnPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46))
         );
         InfoGamePanelLayout.setVerticalGroup(
             InfoGamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(InfoGamePanelLayout.createSequentialGroup()
                 .addGap(23, 23, 23)
-                .addComponent(RoomIDLabel)
+                .addGroup(InfoGamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(RoomIDLabel)
+                    .addComponent(PlayerIDLabel)
+                    .addComponent(NameLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ListOfPlayerPane, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(InfoGamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(WhosTurnPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(WhosTurnLabel))
-                .addGap(34, 34, 34)
                 .addComponent(ChatBoxLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ChatBoxPane, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ChatBoxPane, javax.swing.GroupLayout.PREFERRED_SIZE, 451, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(InfoGamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ChatInputField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -216,6 +234,17 @@ public class BoardGame extends MyFrame {
     private void ChatInputFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChatInputFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ChatInputFieldActionPerformed
+
+    private void EnterPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_EnterPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER)
+        {
+            adaCommand = true;
+            type = "message";
+            paramString = ChatInputField.getText();
+            ChatInputField.setText(" ");
+        }
+    }//GEN-LAST:event_EnterPressed
 
     /**
      * @param args the command line arguments
@@ -274,9 +303,8 @@ public class BoardGame extends MyFrame {
     private javax.swing.JPanel InfoGamePanel;
     private javax.swing.JScrollPane ListOfPlayerPane;
     private javax.swing.JTextArea ListOfPlayerText;
+    private javax.swing.JLabel NameLabel;
+    private javax.swing.JLabel PlayerIDLabel;
     private javax.swing.JLabel RoomIDLabel;
-    private javax.swing.JLabel WhosTurnLabel;
-    private javax.swing.JScrollPane WhosTurnPane;
-    private javax.swing.JTextArea WhosTurnText;
     // End of variables declaration//GEN-END:variables
 }

@@ -139,6 +139,7 @@ public class GomukuClient implements Runnable {
     public static void addCoordinate(JSONObject object) {
         int playerId = ((Long) object.get("playerId")).intValue();
         int roomId = ((Long) object.get("roomId")).intValue();
+        int virtualId = ((Long) object.get("virtualId")).intValue();
         String name = (String) object.get("name");
         JSONArray coordinate = (JSONArray) object.get("content");
         int i = ((Long)coordinate.get(0)).intValue();
@@ -147,7 +148,7 @@ public class GomukuClient implements Runnable {
         board.print();
         System.out.format("%s taking turn at (%d, %d)\n", name, i, j);
         
-        activePage.drawCoordinate(i, j, playerId);
+        activePage.drawCoordinate(i, j, virtualId);
         String[] args = new String[1];
         args[0] = String.format("%s taking turn at (%d, %d)\n", name, i, j);
         activePage.printLog(args);
@@ -156,20 +157,23 @@ public class GomukuClient implements Runnable {
     public static void joinRoom(JSONObject object) {
         int playerId = ((Long) object.get("playerId")).intValue();
         int roomId = ((Long) object.get("roomId")).intValue();
+        String name = (String) object.get("name");
         String[] args = new String[1];
         activePage.setVisible(false);
         if(roomId == 0) {
+            activePage = new GUI.Lobby();
             System.out.format("You have exited from room %d\n", player.getRoom());
             args[0] = String.format("You have exited from room %d\n", player.getRoom());
-            activePage = new GUI.Lobby();
         } else {
             activePage = new GUI.WaitingRoom();
-            System.out.format("You entered room %d\n", roomId);
             activePage.joinRoom(roomId);
+            System.out.format("You entered room %d\n", roomId);
             args[0] = String.format("You entered room %d\n", roomId);
         }
         activePage.setVisible(true);
         activePage.printLog(args);
+        activePage.sendPlayerData(name, 0);
+        System.out.println("Kamu adalah " + name);
         player.setRoom(roomId);
     }
     
@@ -243,6 +247,7 @@ public class GomukuClient implements Runnable {
     public static void play(JSONObject object) {
         int playerId = ((Long) object.get("playerId")).intValue();
         int roomId = ((Long) object.get("roomId")).intValue();
+        int virtualId = ((Long) object.get("virtualId")).intValue();
         String name = (String) object.get("name");
         board = new Board();
         board.print();
@@ -250,6 +255,8 @@ public class GomukuClient implements Runnable {
         activePage.setVisible(false);
         activePage = new GUI.BoardGame();
         activePage.joinRoom(roomId);
+        activePage.sendPlayerData(player.getName(), virtualId);
+        System.out.println(player.getName() + " id = " + virtualId);
         activePage.setVisible(true);
         
         System.out.format("%s (ID = %d) start the game!\n", name, playerId);
@@ -265,6 +272,8 @@ public class GomukuClient implements Runnable {
         
         activePage.setVisible(false);
         activePage = new GUI.WaitingRoom();
+        activePage.joinRoom(player.getRoom());
+        activePage.sendPlayerData(player.getName(), 0);
         activePage.setVisible(true);
         
         String[] args = new String[1];
@@ -304,10 +313,10 @@ public class GomukuClient implements Runnable {
     
     public static void playing(JSONObject object) {
         int roomId = ((Long) object.get("roomId")).intValue();
-        System.out.format("You cannot enter room %d, they are playing.\n", roomId);
+        System.out.format("You cannot enter room %d. Either room invalid or they are playing\n", roomId);
         
         String[] args = new String[1];
-        args[0] = String.format("You cannot enter room %d, they are playing.\n", roomId);
+        args[0] = String.format("You cannot enter room %d. Either room invalid or they are playing\n", roomId);
         activePage.printLog(args);
     }
     
@@ -347,6 +356,7 @@ public class GomukuClient implements Runnable {
         }
         
         activePage = (GUI.MyFrame) new GUI.Lobby();
+        activePage.sendPlayerData(name, 0);
         activePage.setVisible(true);
         
         // Read and write data through socket

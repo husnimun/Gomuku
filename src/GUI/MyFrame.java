@@ -28,7 +28,7 @@ public class MyFrame extends javax.swing.JFrame {
         
     }
     
-    public void drawCoordinate(int x, int y, int playerId)
+    public void drawCoordinate(int x, int y, int virtualId)
     {
         
     }
@@ -42,5 +42,7 @@ public class MyFrame extends javax.swing.JFrame {
         
     }
     
-    
+    public void sendPlayerData(String name, int virtualId) {
+        
+    }
 }
