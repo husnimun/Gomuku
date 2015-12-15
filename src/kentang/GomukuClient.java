@@ -23,6 +23,7 @@ public class GomukuClient implements Runnable {
     public static Socket socket = null;
     public static DataInputStream is = null;
     public static PrintStream os = null;
+    public static ObjectOutputStream oos = null; 
     public static Board board;
     public static Player player;
     
@@ -33,6 +34,7 @@ public class GomukuClient implements Runnable {
     public static boolean isPlaying = false;
     
     public static GUI.MyFrame activePage = null;
+    public static boolean exit = false;
     
     /********************** HANDLE REQUEST TO SERVER **********************/
     
@@ -372,7 +374,7 @@ public class GomukuClient implements Runnable {
             System.out.println("Sudah tidak start lagi");
             
             // Send player object
-            ObjectOutputStream oos = new ObjectOutputStream(os);
+            oos = new ObjectOutputStream(os);
             oos.writeObject(player);
             
             System.out.println("Your ID is " + player.getId());
@@ -380,8 +382,10 @@ public class GomukuClient implements Runnable {
             // Send data through socket
             while (!closed) {
                 while(!activePage.adaCommand) {
+                    if(exit) throw new Exception();
                     Thread.sleep(500);
                 }
+                if(exit) throw new Exception();
                 activePage.adaCommand = false;
                 String type = activePage.type;
                 if(type.equals("create")) {
@@ -406,7 +410,17 @@ public class GomukuClient implements Runnable {
             socket.close();
         } catch (Exception e) {
             System.err.println(e);
+            try {
+                is.close();
+                os.close();
+                oos.close();
+                socket.close();
+            } catch(Exception ep) {
+                
+            }
         }
+        System.out.println("command thread done");
+        System.exit(0);
     }
     
     /********************** THREAD TO RECEIVE DATA FROM SERVER **********************/
@@ -460,8 +474,12 @@ public class GomukuClient implements Runnable {
                 }
             }
             closed = true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println(e);
+            activePage.dispose();
+            exit = true;
         }
+        System.out.println("receive thread done");
+        System.exit(0);
     }
 }

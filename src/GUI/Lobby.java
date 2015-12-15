@@ -124,10 +124,9 @@ public class Lobby extends MyFrame {
 
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        WelcomeLabel.setLabelFor(NameLabel);
         WelcomeLabel.setText("Welcome");
 
-        NameLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        NameLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         NameLabel.setText("jLabel3");
 
         LobbyLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -149,7 +148,7 @@ public class Lobby extends MyFrame {
                                 .addGap(10, 10, 10)
                                 .addComponent(RoomListLabel)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(CreateButton)))
@@ -168,15 +167,15 @@ public class Lobby extends MyFrame {
                                 .addGap(8, 8, 8)
                                 .addComponent(jLabel2)))
                         .addGap(10, 10, 10))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(LandingPageTitle)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(LobbyLabel)
-                        .addGap(396, 396, 396)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(WelcomeLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(NameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(28, 28, 28))))
+                        .addComponent(NameLabel)
+                        .addGap(52, 52, 52))))
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {CreateButton, JoinButton});

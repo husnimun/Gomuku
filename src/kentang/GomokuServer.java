@@ -45,6 +45,7 @@ public class GomokuServer {
                 }
             } catch (Exception e) {
                 System.err.println(e);
+                break;
             }
         }
     }
