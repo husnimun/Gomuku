@@ -82,7 +82,7 @@ class GomukuServerThread extends Thread {
         int playerId = ((Long) object.get("playerId")).intValue();
         int roomId = ((Long) object.get("roomId")).intValue();
         
-        if(roomId < 0 || roomId > a.roomCount || a.isPlaying[roomId]) {
+        if(roomId <= 0 || roomId > a.roomCount || a.isPlaying[roomId]) {
             System.out.println("Masuk room gagal");
             JSONObject message = new JSONObject();
             message.put("type", "playing");
