@@ -147,6 +147,34 @@ class GomukuServerThread extends Thread {
             sendDisablePlay(roomId);
         }
     }
+    public void exitRoom(int playerId) {
+        int roomId = a.player[playerId].getRoom();
+        
+        a.playerCount[roomId]--;
+        a.player[id].setRoom(0);
+        boolean sendDisable = a.playerCount[roomId] == 2;
+        
+        JSONObject join = new JSONObject();
+        join.put("type", "join");
+        join.put("name", a.player[playerId].getName());
+        join.put("playerId", playerId);
+        join.put("roomId", 0);
+        os.println(join.toString());
+        
+        sendHomeStatus();
+        sendRoomStatus(roomId);
+        
+        JSONObject chat = new JSONObject();
+        chat.put("type", "chat");
+        chat.put("playerId", 0);
+        chat.put("roomId", roomId);
+        chat.put("name", "admin");
+        chat.put("content", a.player[id].getName() + " leave the room.");
+        broadcastToRoom(chat.toString(), roomId);
+        if(sendDisable) {
+            sendDisablePlay(roomId);
+        }
+    }
     
     public void play(JSONObject object) {
         int playerId = ((Long) object.get("playerId")).intValue();
@@ -218,7 +246,14 @@ class GomukuServerThread extends Thread {
     }
     
     public void disconnect() {
-        
+        int room = a.player[id].getRoom();
+        if(room != 0) {
+            if(a.isPlaying[room]) {
+                unplay(room);
+            }
+            exitRoom(id);
+        }
+        a.threads[id] = null;
     }
     
     /********************* SERVER ACTION BELOW HERE *************************/
@@ -392,7 +427,6 @@ class GomukuServerThread extends Thread {
             disconnect();
             
             // Remove this thread from threads
-            a.threads[a.player[id].getId()] = null;
             is.close();
             os.close();
             ois.close();
@@ -401,8 +435,15 @@ class GomukuServerThread extends Thread {
             
         } catch (Exception e) {
             disconnect();
-            System.err.println(e);
-            e.printStackTrace();
+            try {
+                is.close();
+                os.close();
+                ois.close();
+                oos.close();
+                clientSocket.close();
+            } catch(Exception ep) {
+                
+            }
         }
 
     }
